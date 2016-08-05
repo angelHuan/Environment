@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hand.ssm.entity.User">	
+
+	<resultMap type="user" id="userMap">
+		<id property="id" column="id"/>
+		<result property="username" column="username"/>
+		<result property="password" column="password"/>
+		<result property="age" column="age"/>
+		<result property="gender" column="gender"/>
+	</resultMap>
+	
+	
+		
+	<insert id="addUser" parameterType="user">
+		insert into user(id,username,password,age,gender) 
+		values(#{id},#{username},#{password},#{age},#{gender});
+	</insert>
+	
+	
+	<select id="findById" parameterType="String" resultMap="userMap">
+		select *
+		from user 
+		where id= #{id}
+	</select>
+	
+	
+	
+	<update id="updateUser" parameterType="user">
+		update user set password = #{password}
+		where id = #{id}
+	</update>
+	
+	
+	<select id="findByProperty" parameterType="map" resultMap="userMap">
+		select * 
+		from user
+		 <where>
+			<if test="username!=null">
+				and username like '%${username}%' 
+			</if>
+			<if test="age!=null">
+				and age = #{age}
+			</if>
+			<if test="gender!=null">
+				and gender = #{gender}
+			</if>
+		</where>	 
+	</select>
+	
+	
+	<!-- 根据数组删除 -->
+	<delete id="deleteByArray">
+		delete from user where id in
+		<foreach collection="array" open="(" close=")" separator="," item="ids">
+			#{ids}
+		</foreach>
+	
+	</delete>
+	
+	
+	
+	
+	
+	<sql id="key">
+		<trim prefixOverrides=",">
+			<if test="id!= null">
+				id,
+			</if>
+		</trim>
+	</sql>
+	
+	
+	
+</mapper>
+
+
+
+
